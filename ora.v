@@ -4,7 +4,7 @@
     Consists of 
     1. Result Compressor (rc.v)
     2. Comparator (comp.v)
-    3. Detected Fault Counter
+    3. Detected Fault Counter (counter.v - instance)
 
 */
 

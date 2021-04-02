@@ -9,6 +9,7 @@ module counter
 #(parameter BITS = 32)
 (
     input clk,
+    input inc,
     output [0:BITS-1] count
 );
     reg [0:BITS-1] counter;
@@ -16,7 +17,7 @@ module counter
         counter = {BITS{1'b0}};
     end
 
-    always @(posedge(clk)) begin
+    always @(posedge(clk) && inc == 1) begin
         counter <= counter + 1;
     end
     assign count = counter;

@@ -13,7 +13,8 @@ module ora
 #(parameter OP_WIDTH = 4, parameter IP_SIG_ADD_BITS = 4)
 (
     input [0 : OP_WIDTH - 1] CUT_OP,
-    input [0 : IP_SIG_ADD_BITS - 1] IP_SIG_ADD
+    input [0 : IP_SIG_ADD_BITS - 1] IP_SIG_ADD,
+    input clk
 );
  
     

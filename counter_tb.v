@@ -1,3 +1,5 @@
+// Counter Module Testbench
+
 `timescale 1ns/1ns
 module counter_tb;
 
@@ -17,7 +19,7 @@ always #5 clk = ~clk;
 
 
 initial begin
-    $monitor ("time= %d, counter = %d, clk = %b", $time, op, clk);
+    $monitor ("time= %d, counter = %b, clk = %b", $time, op, clk);
     #40 in <= 1;
     #30 in <= 0; 
     #20 in <= 1;

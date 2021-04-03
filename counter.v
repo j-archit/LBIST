@@ -1,9 +1,19 @@
 /* 
     Counter Module
-       1. ORA #3
-       2. 
+        Counts Up when inc is 1
 
-    Counts UP on positive edge of clock
+    Used in:
+        1. ORA #3
+    
+    Parameters:
+        1. BITS         : Number of Bits in the Counter
+
+    Inputs: 
+        1.  clk
+        2.  inc         : Increment when 1
+
+    Outputs:
+        1. count        : Current State of Counter
 */
 module counter
 #(parameter BITS = 32)

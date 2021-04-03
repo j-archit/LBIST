@@ -1,4 +1,5 @@
-// Comparator Testbench
+// Comparator Module Testbench
+
 `timescale 1ns/1ns
 
 module comp_tb;
@@ -7,7 +8,7 @@ module comp_tb;
     reg clk;
     wire o;
 
-    comp #(.RC_BITS(BITS)) comp1(.rc_op(A), .ff_sig(B), .clk(clk), .res(o));
+    comp #(.RC_BITS(BITS)) comp1(.clk(clk), .A(A), .B(B), .res(o));
 
     initial begin
         clk <= 0;

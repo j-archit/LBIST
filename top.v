@@ -19,6 +19,13 @@
     3. BIST Controller (bist_c.v)
     4. Test Pattern Generator (tpg.v)
     5. Output Result Analyzer (ora.v)
+
+
+    Rules to Follow:
+    1. Each Module's First Input should be the clock.
+    2. Each Module's testbench must be named <module>_tb.v
+    3. Each Module Must contain a description of the Module Params, IP/OPs in it's Header
+    4.
 */
 
 module top;

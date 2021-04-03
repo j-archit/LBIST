@@ -36,7 +36,7 @@ module mem
     input clk,
     input EN,
     input RW,
-    input [0:address_bits-1] add,
+    input [address_bits-1:0] add,
     inout [word_size-1:0] data
 );
     reg [word_size-1:0] flash [0:mem_size-1];

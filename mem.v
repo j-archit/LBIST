@@ -11,37 +11,52 @@
     2.  address_bits    : Number of Address Bits required to Address the Memory
             (This number always determines the mem_size parameter as 2^(bits) by default)
     3.  mem_size        : Size of the Memory (Number of Addressable Words)
+    4.  file_name       : Memory File to read from
 
     Inputs:
     1.  clk
-    2.  enable          : enable Memory RW Access
-    2.  RW              : Read/Write
-    3.  add             : Address
-    4.  data_w          : Write Input
+    2.  EN              : Chip Enable Pin
+    4.  RW              : Read/Write
+    5.  add             : Address
+    6.  data_w          : Write Input
 
-    Ouputs:
-    1.  data_r          : Read Output
+    Inout:
+    1.  data            : Common Data Pin
+
+    Note: 
+        Data pin must be connected to a Net(outside) in all situations and a continuous 
+        assignment is needed with conditional HighZ being driven on it as necessary when 
+        writing to memory
 
 */
 
 module mem
-#(parameter word_size = 8, parameter address_bits = 8, parameter mem_size = 2^(address_bits))
+#(parameter word_size = 8, parameter address_bits = 8, parameter mem_size = 2**(address_bits), parameter file_name = "mem.mem")
 (
     input clk,
-    input enable,
+    input EN,
     input RW,
     input [0:address_bits-1] add,
-    input [0:word_size-1] data_w,
-    output reg [0:word_size-1] data_r
+    inout [word_size-1:0] data
 );
-    reg [0:word_size-1] flash [0:mem_size-1];
+    reg [word_size-1:0] flash [0:mem_size-1];
+    // Required for Inout
+    reg [word_size-1:0] out;
 
-    always @(posedge(clk) && enable == 1) begin
-        if(RW == 0) begin
-            data_r <= flash[add];
-        end
-       if(RW == 1) begin
-            flash[add] <= data_w;
+    initial begin
+        $readmemb(file_name, flash);
+    end
+
+    assign data = (EN && RW) ? 'hz : out;
+
+    always @(posedge(clk)) begin
+        if(EN == 1) begin
+            if(RW == 0) begin
+                out <= flash[add];
+            end
+            else begin
+                flash[add] <= data;
+            end
         end
     end
 

@@ -14,18 +14,19 @@
         Common Clock used by the BIST components
 
     Blocks
-    1. CUT
-    2. Fault Injection Circuitry (fic.v)
-    3. BIST Controller (bist_c.v)
-    4. Test Pattern Generator (tpg.v)
-    5. Output Result Analyzer (ora.v)
+    1. MidSection (mid.v) (Contains FIC and the CUTs)
+    2. BIST Controller (bist_c.v)
+    3. Test Pattern Generator (tpg.v)
+    4. Output Result Analyzer (ora.v) 
+        (Completed)
 
 
     Rules to Follow:
-    1. Each Module's First Input should be the clock.
-    2. Each Module's testbench must be named <module>_tb.v
-    3. Each Module Must contain a description of the Module Params, IP/OPs in it's Header
-    4.
+    1. Each Module's First Input should be the clock (sequential module only)
+    2. Each Top level Block should have an Asynch Reset
+    3. Each Module's testbench must be named <module>_tb.v
+    4. Each Module Must contain a description of the Module Params, IP/OPs in it's Header
+    5.
 */
 
 module top;
@@ -47,7 +48,7 @@ parameter ADD_BITS = 8;
 parameter RC_BITS = 2; // Width of the Result Compactor Result
 
 // Variables/Nets/Registers
-reg clk; // Common Clock for BIST Controller
+reg clk; // Clock for BIST Controller
 
 initial
 begin

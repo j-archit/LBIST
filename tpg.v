@@ -11,7 +11,8 @@ module tpg
 (
     input clk,
     input rst,
-
+    
+    output reg END,
     output reg [OUT_BITS-1:0] TEST_PATTERN
 );
 

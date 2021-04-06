@@ -8,13 +8,13 @@ module comp_tb;
     reg clk;
     wire o;
 
-    comp #(.RC_BITS(BITS)) comp1(.clk(clk), .A(A), .B(B), .res(o));
+    comp #(.BITS(BITS)) comp1( .A(A), .B(B), .res(o));
 
     initial begin
         clk <= 0;
         A <= {BITS{1'b0}};
         B <= {BITS{1'b0}};
-        $monitor("Time = %d, A = %h, B = %h, Output = %b, clk = %b", $time, A, B, o, clk);
+        $monitor("Time = %d, A = %h, B = %h, Output = %b", $time, A, B, o);
     end
 
     always #5 clk = ~clk;

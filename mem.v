@@ -2,9 +2,8 @@
     Memory Module
     
     Used in:
-    1. ORA Fault Free Responses Storage
-    2. Deterministic Test Patterns Storage
-    3. Other RW Memories if Required
+    1. Deterministic Test Patterns Storage
+    2. Other RW Memories if Required
 
     Parameters:
     1.  word_size       : Determines the Word Size of Memory

@@ -8,16 +8,16 @@ module rpg_tb;
 
     reg clk;
     reg rst;
-    wire END;
+    wire END, p;
     wire [BITS-1:0] op;
-
+    assign p = ~END;
     rpg #(.BITS(BITS)) RPG(.clk(clk), .rst(rst), .END(END), .register(op));
 
     initial clk <= 0;
     always #5 clk <= ~clk;
     
     always begin
-        $monitor("Time = %.0f, Pattern = %b", $time, op);
+        $monitor("Time = %.0f, Pattern = %b, END_F = %b", $time, op, p);
         #3
         rst <= 1;
         #3

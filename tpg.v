@@ -1,5 +1,6 @@
 /* 
     Test Pattern Generator
+        Combinational Circuit Wrapper Around RPG (and DPG**)
 
     Consists of 
     1. Random Pattern Generator Only(rpg.v)
@@ -7,21 +8,16 @@
 */
 
 module tpg
-#(parameter OUT_BITS = 4)
+#(parameter BITS = 4)
 (
     input clk,
     input rst,
-    
-    output reg END,
-    output reg [OUT_BITS-1:0] TEST_PATTERN
+
+    output END,
+    output [BITS-1:0] TEST_PATTERN
 );
+    assign END = ~E;
 
-    wire [OUT_BITS-1:0] test;
-    
-    rpg #(.BITS(OUT_BITS)) PATTERN(.clk(clk), .rst(rst), .OP(test));
-
-    always @(posedge(clk)) begin
-        TEST_PATTERN <= test;
-    end
+    rpg #(.BITS(BITS)) PATTERN(.clk(clk), .END(E), .rst(rst), .register(TEST_PATTERN));
     
 endmodule

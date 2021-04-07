@@ -3,9 +3,6 @@
         Outputs A xnor B (0 when A = B, 1 otherwise)
         Compares the Inputs present at the clock edge.
 
-    Used in:
-        1.  ORA #2
-    
     Parameters:
         1.  BITS     : Number of Bits Received per input
     

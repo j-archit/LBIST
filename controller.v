@@ -4,6 +4,7 @@
 */
 
 module controller
+#(parameter ERR_BITS = 8)
 (
     input clk,
     input TPG_END,
@@ -11,12 +12,11 @@ module controller
 
     output reg RESET,
     output TPG_RESET,
-    output INC,
+    output FIL_INC,
     output [ERR_BITS-1:0] ERR_COUNTER
 );
     parameter SETUP_DELAY = 10;
-    parameter ERR_BITS = 8;
-    
+
     reg TPG_R_INT;
     reg INC_INT;
    
@@ -33,6 +33,6 @@ module controller
     end
 
     or OR_TPG(TPG_RESET, ORA_RES, TPG_R_INT);
-    or OR_FIC(INC, ORA_RES, TPG_END, INC_INT);
+    or OR_FIC(FIL_INC, ORA_RES, TPG_END, INC_INT);
 
 endmodule

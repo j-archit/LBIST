@@ -14,7 +14,7 @@
         Common Clock used by the BIST components
 
     Blocks
-    1. MidSection (mid.v) (Contains FIC and the CUTs)
+    1. MidSection (mid.v) (Contains FIL and the CUTs)
         (In Progress)
     2. BIST Controller (controller.v)
         (Completed)
@@ -35,36 +35,42 @@
 module top;
 
 // Parameters
-// CUT
-parameter INPUT_BITS = 4; // No of Inputs of CUT
-parameter OUTPUT_BITS = 4; // NO of Outputs of CUT
-parameter TOT_FAULTS = 100; // Total Number of Stuck at Faults Possible
+    // CUT
+    parameter IN_BITS = 4; // No of Inputs of CUT
+    parameter OUT_BITS = 4; // NO of Outputs of CUT
+    parameter TOT_FAULT_BITS = 16; // Bits required to store "Number of Stuck at Faults Possible"
 
-// Test Patterns
-parameter NUM_DTP = 100; // Number of Deterministic Test Patterns
-parameter NUM_RTP = 100; // Number of Random Test Patterns
-parameter ADD_BITS = 8;
-    // Width of the Memory Address for correct responses of tests
-    // Depends on total number of tests applied.
-
-// ORA
-parameter RC_BITS = 2; // Width of the Result Compactor Result
+    // ORA
+    parameter RC_OUT_BITS = 4; // Width of the Result Compactor Result
+// Parameters End
 
 // Variables/Nets/Registers
-reg clk; // Clock for BIST Controller
+    // Input Side
+    wire TPG_END, ORA_RES;
+    wire SYS_RESET, TPG_RESET;
+    wire FIL_INC;
+    wire [TOT_FAULT_BITS-1:0] ERR_COUNT;
+    wire [IN_BITS-1:0] TEST_PATTERN;
+    
+    // Output Side
+    wire [OUT_BITS-1:0] CUT_OP, FF_OP;
+// End
 
-initial
-begin
-    clk = 0;
-end
+// Module Instantiations
+    controller #(.ERR_BITS(TOT_FAULT_BITS)) B0(.clk(clk), .TPG_END(TPG_END), .ORA_RES(ORA_RES), .RESET(SYS_RESET), .TPG_RESET(TPG_RESET), .FIL_INC(FIL_INC), .ERR_COUNTER(ERR_COUNT));
+    tpg #(.BITS(IN_BITS)) B1(.clk(clk), .rst(TPG_RESET), .END(TPG_END), .TEST_PATTERN(TEST_PATTERN));
+    mid #(.IN_BITS(IN_BITS), .OUT_BITS(OUT_BITS)) B2(.clk(clk), .rst(SYS_RESET), .FIL_INC(FIL_INC), .TEST_IP(TEST_PATTERN), .CUT_OP(CUT_OP), .FF_OP(FF_OP));
+    ora #(.OUT_BITS(OUT_BITS)) B3(.clk(clk), .rst(SYS_RESET), .CUT_OP(CUT_OP), .FF_OP(FF_OP), .RES(ORA_RES));
+// Instantiations End
 
-always
-begin
-    #10 assign clk = !clk;
-end
+// clk Control
+    reg clk;
+    initial clk <= 0;
+    always #10 clk <= ~clk;
+// clk ends
 
-initial begin
-    #100 $finish;
-end
+    initial begin
+        #100 $finish;
+    end
 
 endmodule

@@ -35,31 +35,26 @@
 */
 
 module ora
-#(parameter BITWIDTH = 4)
+#(parameter OUT_BITS = 4)
 (
     input clk,
-    input [0 : BITWIDTH - 1] CUT_OP,
-    input [0 : BITWIDTH - 1] FF_OP,
     input rst,
+    input [OUT_BITS - 1 : 0] CUT_OP,
+    input [OUT_BITS - 1 : 0] FF_OP,
     output reg RES
 );
   
-    wire [BITWIDTH - 1:0] RC_CUT, RC_FF;
+    wire [OUT_BITS - 1:0] RC_CUT, RC_FF;
     wire COMP_RES;
 
-    rc #(.OUTPUT_BITS(BITWIDTH), .INPUT_BITS(BITWIDTH)) R1(.ip(CUT_OP), .op(RC_CUT));
-    rc #(.OUTPUT_BITS(BITWIDTH), .INPUT_BITS(BITWIDTH)) R2(.ip(FF_OP), .op(RC_FF));
+    rc #(.OUTPUT_BITS(OUT_BITS), .INPUT_BITS(OUT_BITS)) R1(.ip(CUT_OP), .op(RC_CUT));
+    rc #(.OUTPUT_BITS(OUT_BITS), .INPUT_BITS(OUT_BITS)) R2(.ip(FF_OP), .op(RC_FF));
 
-    comp #(.BITS(BITWIDTH)) comparator1(.A(RC_CUT), .B(RC_FF), . res(COMP_RES));
+    comp #(.BITS(OUT_BITS)) comparator1(.A(RC_CUT), .B(RC_FF), . res(COMP_RES));
 
-    always @(posedge(clk)) begin
-        RES <= COMP_RES;
-    end
-
-    always begin
-        if(rst == 1) begin
-            RES <= 0;
-        end
+    always @(posedge(clk) or posedge(rst)) begin
+        if(rst != 1) RES <= COMP_RES;
+        else RES <= 0;
     end
 
 endmodule

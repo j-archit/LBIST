@@ -11,12 +11,17 @@ module controller
 
     output reg RESET,
     output TPG_RESET,
-    output INC
+    output INC,
+    output [ERR_BITS-1:0] ERR_COUNTER
 );
     parameter SETUP_DELAY = 10;
+    parameter ERR_BITS = 8;
     
     reg TPG_R_INT;
     reg INC_INT;
+   
+
+    counter #(ERR_BITS) ERR_COUNT(.clk(clk), .rst(RESET), .inc(ORA_RES), .counter(ERR_COUNTER));
 
     initial begin
         RESET <= 1;

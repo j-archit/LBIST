@@ -16,8 +16,8 @@
     Blocks
     1. MidSection (mid.v) (Contains FIC and the CUTs)
         (In Progress)
-    2. BIST Controller (bist_c.v)
-        (In Progress)
+    2. BIST Controller (controller.v)
+        (Completed)
     3. Test Pattern Generator (tpg.v)
         (Completed)
     4. Output Result Analyzer (ora.v) 

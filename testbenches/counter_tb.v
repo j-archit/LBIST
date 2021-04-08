@@ -6,21 +6,25 @@ module counter_tb;
 parameter BITS = 8;
 reg clk;
 reg in;
-wire [0:BITS-1] op;
+reg rst;
+wire [BITS-1:0] op;
 
-counter #(.BITS(BITS)) c1(.clk(clk), .inc(in), .count(op));
+counter #(.BITS(BITS)) c1(.clk(clk), .rst(rst), .inc(clk), .counter(op));
 
 initial begin
     in <= 0;
     clk <= 0;
+    rst <= 0;
 end
 
 always #5 clk = ~clk; 
 
 
 initial begin
-    $monitor ("time= %d, counter = %b, clk = %b", $time, op, clk);
-    #40 in <= 1;
+    $monitor ("time= %d, counter = %d, clk = %b", $time, op, clk);
+    #20 in <= 1;
+    #2 rst <= 1;
+    #10 rst <= 0;
     #30 in <= 0; 
     #20 in <= 1;
     #5 in <= 0;

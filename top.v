@@ -36,23 +36,26 @@ module top;
 
 // Parameters
     // CUT
-    parameter IN_BITS = 4; // No of Inputs of CUT
-    parameter OUT_BITS = 4; // NO of Outputs of CUT
-    parameter TOT_FAULT_BITS = 16; // Bits required to store "Number of Stuck at Faults Possible"
+
+    // No of Inputs of CUT
+    parameter IN_BITS = 5; 
+    // NO of Outputs of CUT
+    parameter OUT_BITS = 2;
+    // Bits required to store "Number of Stuck at Faults Possible"
+    parameter TOT_FAULT_BITS = 16;
 
     // ORA
-    parameter RC_OUT_BITS = 4; // Width of the Result Compactor Result
+    // Width of the Result Compactor Result
+    parameter RC_OUT_BITS = 2;
+
 // Parameters End
 
 // Variables/Nets/Registers
-    // Input Side
     wire TPG_END, ORA_RES;
     wire SYS_RESET, TPG_RESET;
     wire FIL_INC;
     wire [TOT_FAULT_BITS-1:0] ERR_COUNT;
     wire [IN_BITS-1:0] TEST_PATTERN;
-    
-    // Output Side
     wire [OUT_BITS-1:0] CUT_OP, FF_OP;
 // End
 
@@ -66,11 +69,12 @@ module top;
 // clk Control
     reg clk;
     initial clk <= 0;
-    always #10 clk <= ~clk;
+    always #5 clk <= ~clk;
 // clk ends
 
-    initial begin
-        #100 $finish;
+    always @(posedge(clk)) begin
+        $monitor("T=%.0f,R=%b,TR=%b,TE=%b,FI=%b,TP=%b,OP_F=%b,OP_FF=%b,OR=%b,ERRORS=%d", $time, SYS_RESET, TPG_RESET, TPG_END, FIL_INC, TEST_PATTERN, CUT_OP, FF_OP, ORA_RES,ERR_COUNT);
+        #1000 $finish;
     end
 
 endmodule

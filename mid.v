@@ -41,7 +41,7 @@ module mid
     // Make NO CHANGES in this block manually
     // Anchor
 	c17 #() faulty(
-		TEST_IP[4], TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], CUT_OP[1], CUT_OP[0]
+		1'b0, TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], CUT_OP[1], CUT_OP[0]
     );
 	c17 #() faultf(
 		TEST_IP[4], TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], FF_OP[1], FF_OP[0]

@@ -4,7 +4,7 @@
 */
 
 module controller
-#(parameter ERR_BITS = 8)
+#(parameter ERR_BITS = 8, parameter SETUP_DELAY = 3)
 (
     input clk,
     input TPG_END,
@@ -15,12 +15,9 @@ module controller
     output FIL_INC,
     output [ERR_BITS-1:0] ERR_COUNTER
 );
-    parameter SETUP_DELAY = 10;
-
     reg TPG_R_INT;
     reg INC_INT;
    
-
     counter #(ERR_BITS) ERR_COUNT(.clk(clk), .rst(RESET), .inc(ORA_RES), .counter(ERR_COUNTER));
 
     initial begin

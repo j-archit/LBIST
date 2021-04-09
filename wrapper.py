@@ -13,4 +13,6 @@ o1, o2 = func.generate_port_lines(i, o, "TEST_IP", "CUT_OP", "FF_OP")
 func.change_mid(mid_file, cut, o1, o2)
 func.change_top_params(top_file, int(i), int(o))
 
-os.system(".\\run.bat")
+os.system("iverilog -o output -c .compile")
+os.system("vvp output > output.txt")
+os.system("output.txt")

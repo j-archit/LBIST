@@ -48,3 +48,21 @@ def change_mid(mid, cut, o02, o12, params = ""):
     f = open(mid, "w")
     f.write("".join(lines))
 
+def change_top_params(fname, inp = 3, out = 1, fbits = 16, rc_bits = 2):
+    f = open(fname, "r")
+    f.seek(0)
+    p = "\tparameter"
+    lines = f.readlines()
+    for i, line in enumerate(lines):
+        if (line.strip().lower()[2:]).strip() == "params":
+            lines[i+1] = p + f" IN_BITS = {inp};\n"
+            lines[i+2] = p + f" OUT_BITS = {out};\n"
+            lines[i+3] = p + f" RC_OUT_BITS = {rc_bits};\n"
+            lines[i+4] = p + f" TOT_FAULT_BITS = {fbits};\n"
+            break
+    f.close()
+    f = open (fname, "w")
+    # for i, lin in enumerate(lines):
+    #     print(lin, f"+{i}")
+    f.write("".join(lines))
+            

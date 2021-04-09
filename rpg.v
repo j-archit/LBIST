@@ -28,7 +28,7 @@ module rpg
     reg [BITS-1:0] poly_seed [0:1];
     
     // For File Name Only
-    reg [16 : 1] f = "00";
+    reg [64 : 1] f = "poly\\00";
     integer t0, t1;
     
     // Initialize the Polynomial Coeffs and Seed from Memory   

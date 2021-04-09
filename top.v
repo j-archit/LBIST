@@ -37,16 +37,15 @@ module top;
 // Parameters
     // CUT
 
-    // No of Inputs of CUT
-    parameter IN_BITS = 5; 
-    // NO of Outputs of CUT
-    parameter OUT_BITS = 2;
-    // Bits required to store "Number of Stuck at Faults Possible"
-    parameter TOT_FAULT_BITS = 16;
-
-    // ORA
-    // Width of the Result Compactor Result
-    parameter RC_OUT_BITS = 2;
+    // No of Inputs/Outputs of CUT
+    // Python Scripts Edits this using "// Params" Comment
+    // Do NOT MANUALLY EDIT
+    // Params
+	parameter IN_BITS = 41;
+	parameter OUT_BITS = 32;
+	parameter RC_OUT_BITS = 2;
+	parameter TOT_FAULT_BITS = 16;
+    // Params
 
 // Parameters End
 
@@ -69,12 +68,12 @@ module top;
 // clk Control
     reg clk;
     initial clk <= 0;
-    always #5 clk <= ~clk;
+    always #3 clk <= ~clk;
 // clk ends
 
     always @(posedge(clk)) begin
         $monitor("T=%.0f,R=%b,TR=%b,TE=%b,FI=%b,TP=%b,OP_F=%b,OP_FF=%b,OR=%b,ERRORS=%d", $time, SYS_RESET, TPG_RESET, TPG_END, FIL_INC, TEST_PATTERN, CUT_OP, FF_OP, ORA_RES,ERR_COUNT);
-        #1000 $finish;
+        #100000 $finish;
     end
 
 endmodule

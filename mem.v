@@ -29,6 +29,8 @@
 
 */
 
+`timescale 1ns/1ns
+
 module mem
 #(parameter word_size = 8, parameter address_bits = 8, parameter mem_size = 2**(address_bits), parameter file_name = "mem.mem")
 (

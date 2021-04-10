@@ -14,6 +14,8 @@
         1.  res         : Result of Comparison
 */
 
+`timescale 1ns/1ns
+
 module comp
 #(parameter BITS = 2)
 (

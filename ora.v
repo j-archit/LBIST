@@ -34,6 +34,8 @@
                          ----               ---------------
 */
 
+`timescale 1ns/1ns
+
 module ora
 #(parameter OUT_BITS = 4)
 (

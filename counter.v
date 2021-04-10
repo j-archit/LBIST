@@ -16,6 +16,9 @@
     Outputs:
         1. count        : Current State of Counter
 */
+
+`timescale 1ns/1ns
+
 module counter
 #(parameter BITS = 32)
 (

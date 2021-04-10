@@ -3,6 +3,8 @@
         Controller of the blocks of BIST functionality
 */
 
+`timescale 1ns/1ns
+
 module controller
 #(parameter ERR_BITS = 8, parameter SETUP_DELAY = 3)
 (

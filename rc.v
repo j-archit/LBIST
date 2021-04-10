@@ -2,6 +2,8 @@
     Result Compressor Module 
 */
 
+`timescale 1ns/1ns
+
 module rc
 #(parameter OUTPUT_BITS = 4, INPUT_BITS = 4)
 (

@@ -15,6 +15,8 @@
 
 */
 
+`timescale 1ns/1ns
+
 module rpg 
 #(parameter BITS = 4)
 (

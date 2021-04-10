@@ -1,18 +1,15 @@
-import os
 import wfunctions as func
 
-
-cut = "c499"
-cut_file = f"ISCAS85\\{cut}.v"
+cut = ["c17", "c432", "c499"]
 mid_file = "mid.v"
 top_file = "top.v"
 
-i, o = func.get_config(cut_file)
+# Preproccesing CUT Files:
+for c in cut:
+    func.cut_f(c)
 
-o1, o2 = func.generate_port_lines(i, o, "TEST_IP", "CUT_OP", "FF_OP")
-func.change_mid(mid_file, cut, o1, o2)
-func.change_top_params(top_file, int(i), int(o))
+# func.os.system("del /f output.txt")
+# for c in cut:
+#     func.wrap(c, mid_file, top_file)
 
-os.system("iverilog -o output -c .compile")
-os.system("vvp output > output.txt")
-os.system("output.txt")
+

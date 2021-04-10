@@ -1,6 +1,9 @@
 ISCAS85\c17.v
+ISCAS85\c17f.v
 ISCAS85\c432.v
+ISCAS85\c432f.v
 ISCAS85\c499.v
+ISCAS85\c499f.v
 comp.v
 controller.v
 counter.v
@@ -10,3 +13,4 @@ rc.v
 rpg.v
 top.v
 tpg.v
+fim.v

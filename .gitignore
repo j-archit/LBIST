@@ -1,4 +1,14 @@
-.gitignore
+/temp
+/ISCAS85
+__pycache__
+/poly
+
+output
+output.txt
+dpg.v
+fic.v
+*.bat
 desktop.ini
-Changes/desktop.ini
-Changes\desktop.ini
+mem.mem
+test.v
+test_t.v

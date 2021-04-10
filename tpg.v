@@ -1,17 +1,25 @@
 /* 
     Test Pattern Generator
+        Combinational Circuit Wrapper Around RPG (and DPG**)
 
     Consists of 
-    1. Random Pattern Generator (rpg.v)
-    2. Deterministic Pattern Generator (dpg.v)
-    3. Selection Multiplexer
+    1. Random Pattern Generator Only(rpg.v)
 
 */
 
+`timescale 1ns/1ns
+
 module tpg
-#(parameter INPUT_BITS = 4)
+#(parameter BITS = 4)
 (
-    input type
+    input clk,
+    input rst,
+
+    output END,
+    output [BITS-1:0] TEST_PATTERN
 );
+    assign END = ~E;
+
+    rpg #(.BITS(BITS)) PATTERN(.clk(clk), .END(E), .rst(rst), .register(TEST_PATTERN));
     
 endmodule

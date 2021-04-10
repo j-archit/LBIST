@@ -1,8 +1,16 @@
-// ORA #1 - Result Compressor 
+/* 
+    Result Compressor Module 
+*/
+
+`timescale 1ns/1ns
 
 module rc
-#(parameter OUTPUT_BITS = 4)
+#(parameter OUTPUT_BITS = 4, INPUT_BITS = 4)
 (
+    input [INPUT_BITS-1:0] ip,
+    output [OUTPUT_BITS-1:0] op
 );
+
+    assign op = ip;
     
 endmodule

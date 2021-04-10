@@ -1,11 +1,30 @@
-// ORA #2 - Comparator Module
+/* 
+    Comparator Module
+        Outputs A xnor B (0 when A = B, 1 otherwise)
+        Compares the Inputs present at the clock edge.
+
+    Parameters:
+        1.  BITS     : Number of Bits Received per input
+    
+    Inputs:
+        1.  A           : Input 1
+        2.  B           : Input 2
+    
+    Outputs:
+        1.  res         : Result of Comparison
+*/
+
+`timescale 1ns/1ns
 
 module comp
-#(parameter RC_BITS = 2)
+#(parameter BITS = 2)
 (
-    input [0 : RC_BITS - 1] rc_op,
-    input [0 : RC_BITS - 1] ff_sig,
+    input [0 : BITS - 1] A,
+    input [0 : BITS - 1] B,
     output res
 );
-    
+    wire [0 : BITS - 1] r; 
+    assign r = A ~^ B;
+    assign res = ~&r;
+
 endmodule

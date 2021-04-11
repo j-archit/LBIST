@@ -6,11 +6,12 @@
 `timescale 1ns/1ns
 
 module controller
-#(parameter ERR_BITS = 8, parameter SETUP_DELAY = 3)
+#(parameter ERR_BITS = 8, parameter SETUP_DELAY = 12)
 (
     input clk,
     input TPG_END,
     input ORA_RES,
+    input FIL_END,
 
     output reg RESET,
     output TPG_RESET,

@@ -31,7 +31,7 @@ module mid
     input clk,
     input rst,
     input FIL_INC,
-    input FIL_END,
+    output FIL_END,
     input [IN_BITS-1:0] TEST_IP,
     output [OUT_BITS-1:0] CUT_OP, FF_OP
 );
@@ -40,7 +40,7 @@ module mid
     // Make NO CHANGES in this block manually
     // Anchor
 	c17f #() faulty(
-		TEST_IP[4], TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], CUT_OP[1], CUT_OP[0]
+		FIL_INC, FIL_END, clk, rst, TEST_IP[4], TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], CUT_OP[1], CUT_OP[0]
     );
 	c17 #() faultf(
 		TEST_IP[4], TEST_IP[3], TEST_IP[2], TEST_IP[1], TEST_IP[0], FF_OP[1], FF_OP[0]

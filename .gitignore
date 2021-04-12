@@ -12,3 +12,5 @@ desktop.ini
 mem.mem
 test.v
 test_t.v
+*.vcd
+Results_c*

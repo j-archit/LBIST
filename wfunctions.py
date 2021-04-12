@@ -1,9 +1,10 @@
 import os
 import re
+import random as ra
 from math import log2, ceil
 
 def generate_port_lines(i, o, inp_arr, out_arr1, out_arr2):
-    l1 = ""
+    l1 = "FIL_INC, FIL_END, clk, rst, "
     l2 = ""
     for c in range(i):
         l1 = l1 + inp_arr + f"[{i-c-1}], "
@@ -47,9 +48,8 @@ def mod_mid(mid, cut, inputs, outputs, inp_arr, out_arr1, out_arr2, params = "")
 
     s = r"// Anchor"
 
-    f = open(mid, "a+")
-    f.seek(0)
-    lines = f.readlines()
+    with open(mid, "r") as f:
+        lines = f.readlines()
     for i, line in enumerate(lines):
         line = line.strip()
         if line == s:
@@ -58,7 +58,6 @@ def mod_mid(mid, cut, inputs, outputs, inp_arr, out_arr1, out_arr2, params = "")
             lines[i+4] = o11
             lines[i+5] = o12
             break
-    f.close()
     f = open(mid, "w")
     f.write("".join(lines))
 
@@ -83,21 +82,9 @@ def mod_top_params(fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, cl
     f = open (fname, "w")
     f.write("".join(lines))
            
-def wrap(cut, mid_file, top_file):
-    
-    cut_file = f"ISCAS85\\{cut}.v"
-    inputs, outputs, faults = get_config(cut_file)
-    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
-    mod_top_params(top_file, inputs, outputs, faults)
-
-    os.system("iverilog -o output -c .compile")
-    os.system(f"echo {cut.upper()} >> output.txt")
-    os.system(f"vvp output >> output.txt")
-
-
-def cut_f(cut):
 # Note that this function needs to be run only once 
 # and not on every compilation to edit the faulty cut file
+def cut_f(cut):
     cut_file = f"ISCAS85\\{cut}"
     
     with open(cut_file + ".v", "r") as f:
@@ -112,7 +99,7 @@ def cut_f(cut):
     insert_index = 0
     struc_index = 0
 
-    # Builds net_dict, PIs and fanouts dictionaries/libraries
+    # Builds net_dict, PIs and fanouts list/dictionaries
     for m, line in enumerate(lines):
 
         # For all Nets
@@ -171,12 +158,40 @@ def cut_f(cut):
     for key in fanouts:
         num_fan = num_fan + fanouts[key]
 
-    regf = "\treg fault;\n"
+    inp = "input INC,clk,rst;\noutput reg END;\n"
+    regf = "reg fault;\n"
     enable = f"reg [{len(PIs) + num_fan -1}:0] FEN;\n"
     PIwires = "wire " if len(PIs) else "" 
     PIinstance = ""
     FANwires = "wire " if len(fanouts) else ""
     FANinstance = ""
+    initial = f"""initial begin
+    FEN <= {{{len(PIs) + num_fan - 1}'b0, 1'b1}};
+    fault <= 1'b0;
+    END <= 1'b0;
+    //$display("FEN = %.0f, F = %b", FEN, fault);
+    end
+    """
+    
+    always = f"""always @(posedge(clk) or posedge(rst)) begin
+    if(rst == 1) begin
+        FEN <= {{{len(PIs) + num_fan - 1}'b0, 1'b1}};
+        fault <= 1'b0;
+        END <= 1'b0;
+    end
+    else if(clk == 1 && INC == 1) begin
+        if (FEN == {{1'b1,{len(PIs) + num_fan - 1}'b0}} && fault == 1'b0) begin
+            fault <= 1;
+        end
+        if (FEN == {{1'b1,{len(PIs) + num_fan - 1}'b0}} && fault == 1'b1) begin
+            END <= 1;
+            fault <= 1;
+        end
+        FEN <= {{FEN[{len(PIs) + num_fan - 2}:0], FEN[{len(PIs) + num_fan - 1}]}};
+    end
+    end
+    //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
+    """
     
     # Build PIs wires and FIMs
     for i,net in enumerate(PIs):
@@ -234,7 +249,7 @@ def cut_f(cut):
     # --This process changes indices 
     # --hence it needs to be done after the 
     # --edits are made to the existing code
-    final = regf + PIwires + FANwires + enable + PIinstance + FANinstance
+    final = inp + regf + PIwires + FANwires + enable + PIinstance + FANinstance + initial + always
     final = final.strip()
     for i, ins in enumerate(final.split("\n")):
         lines.insert(insert_index + i,  ins + "\n")
@@ -244,7 +259,6 @@ def cut_f(cut):
     
     # Update CUT and CUTf file to have number of 
     # faults and required bits in the header
-    # also update the module name of faulty cut
     fff = 2*(num_fan + len(PIs))
     with open(cut_file + ".v", "r") as f0:
         r = f0.readlines()
@@ -276,17 +290,65 @@ def cut_f(cut):
     with open(cut_file + "f.v", "r") as f0: 
         r = f0.readlines()
     
+    # UPdate Module Name of faulty circuit and add extra ports
     for i, ri in enumerate(r):
-        # Change Module Name
-        F = re.findall("module c[0-9]+ ", ri)
+        F = re.findall("module c[0-9]+ [(]", ri)
         if F == []:
             continue
         F = F[0]
-        spl = re.split("module c[0-9]+ ", ri)
-        F = re.sub("module c[0-9]+ ", F[:-1] + "f ", F)
-        spl.insert(1, F)
-        r[i] = "".join(spl)
+        F = re.findall("[0-9]+", F)[0]
+        r[i] = re.sub( "module c[0-9]+ [(]" , f"module c{F}f (INC,END,clk,rst,", ri)
         break
 
     with open(cut_file + "f.v", "w") as f0:
         f0.writelines(r)
+
+def gen_pol_seed(bit, thresh1 = 0.5):
+    
+    str1 = ""
+    for i in range(0,bit-2):
+        str1 = str1 + str(1 if ra.random() > thresh1 else 0)
+    str1 = str1 + "1 "
+    for i in range(0,bit):
+        str1 = str1 + str(1 if ra.random() > thresh1 else 0)
+    return str1
+
+def prep_source(cut, mid_file, top_file):
+
+    cut_file = f"ISCAS85\\{cut}.v"
+    inputs, outputs, faults = get_config(cut_file)
+    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
+    mod_top_params(top_file, inputs, outputs, faults)
+    return inputs, faults
+
+def wrap_each(cut, mid_file, top_file, iters = 10, thresh = 0.5):
+    inp, fau = prep_source(cut, mid_file, top_file)
+    f = open(f"Results_{cut}", "a")
+    wlines = []
+    for iter in range(0, iters):
+        str1 = gen_pol_seed(inp, thresh)
+        w = ""
+        with open(f"poly\\{int(inp/10)}{inp%10}", "w") as po:
+            po.write(str1)
+        os.system("iverilog -o output -c .compile")
+        os.system("vvp output > output.txt")
+        with open("output.txt", "r") as op:
+            lines = op.readlines()
+        for line in lines:
+            F = re.findall("[0-9]+", line)
+            if F == []:
+                continue
+            if(len(F) == 2):
+                w = f"{F[0]}/{fau}, "
+                continue
+            else:
+                w = w + f"{F[1]}, ({F[2]}ns)"
+                break
+        m = w + " P:" + str1 
+        print(m)
+        wlines.append(m + "\n")
+    f.writelines(wlines)
+            
+
+
+

@@ -18,8 +18,6 @@ module tpg
     output END,
     output [BITS-1:0] TEST_PATTERN
 );
-    assign END = ~E;
-
-    rpg #(.BITS(BITS)) PATTERN(.clk(clk), .END(E), .rst(rst), .register(TEST_PATTERN));
+    rpg #(.BITS(BITS)) P(.clk(clk), .END(END), .rst(rst), .register(TEST_PATTERN));
     
 endmodule

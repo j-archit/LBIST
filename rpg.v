@@ -17,13 +17,13 @@
 
 `timescale 1ns/1ns
 
-module rpg 
+module rpg
 #(parameter BITS = 4)
 (
     input clk,
     input rst,
 
-    output END,
+    output reg END,
     output reg [BITS-1:0] register
 );
     // Stores Polynomial Coefficients and Seed Value
@@ -46,30 +46,35 @@ module rpg
         // Initialize Register to Seed
         register <= poly_seed[1];
         reg_inp <= 0;
+        END <= 0;
     end
 
     // LFSR Implementation from Here
-    
-    comp #(.BITS(BITS)) COMP1(.A(register), .B(poly_seed[1]), .res(END));
-
     reg reg_inp;
+    wire END_t;
     integer i = 0;
+    
+    //comp #(.BITS(BITS)) COMP1(.A(register), .B(poly_seed[1]), .res(END_t));
 
+    //always @(END_t) END <= ~END_t;
     always @(posedge(clk) or posedge(rst)) begin
         if(rst == 1) begin
             register <= poly_seed[1];
         end
-        else begin
-            // For loop impliments a general LFSR
+        else if (rst != 1) begin
+            // For loop implements a general LFSR
             for(i = 0; i < BITS; i = i + 1) begin
                 // This statement has to be blocking, otherwise all the 
                 // iterations are done simultaneously.
                 reg_inp = reg_inp ^ (poly_seed[0][i] && register[i]);
             end
             register[BITS-2:0] <= register >> 1;
-            register[BITS-1] <= reg_inp;          
-            
+            register[BITS-1] <= reg_inp;
             reg_inp <= 0;
+        end
+        else if (register == poly_seed[0]) begin
+            if (END != 1) END <= 1;
+            else END <= 0;
         end
     end
 endmodule

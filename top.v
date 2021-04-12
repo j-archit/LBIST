@@ -36,11 +36,11 @@ module top;
     // Python Scripts Edits this using "// Params" Comment
     // Do NOT MANUALLY EDIT
     // Params
-	parameter IN_BITS = 5;
-	parameter OUT_BITS = 2;
+	parameter IN_BITS = 41;
+	parameter OUT_BITS = 32;
 	parameter RC_OUT_BITS = 2;
-	parameter TOT_FAULT_BITS = 5;
-	parameter ERR_TOTAL = 20;
+	parameter TOT_FAULT_BITS = 10;
+	parameter ERR_TOTAL = 528;
 	parameter clk_period = 5;
     // Params
 
@@ -71,13 +71,32 @@ module top;
 
 // Complete Simulation
     // As soon as FIL ends Injections, Stop Simulation
-    always @(posedge(FIL_END) && TPG_END == 1) begin
+    always @(posedge(FIL_END)) begin
+        #(2*clk_period)
+        $display("Errors Detected = %.0f, Total Errors = %.0f\n", ERR_COUNT, ERR_TOTAL);
+        $finish;
+    end
+    
+    // Finish Simulation if it takes more than 10^9 simulation time
+    always begin
+        #1000000
         $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
-        #(4*clk_period) $finish;
+        $finish;
     end
 
-    // always @(posedge(clk)) begin
+    // always begin
+    //     #1000000
+    //     $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
+    // end
+
+    // always @(clk) begin
     //     $display("T=%.0f,R=%b,TR=%b,TE=%b,FI=%b,FE=%b,TP=%b,OP_F=%b,OP_FF=%b,OR=%b,ERRORS=%.0f", $time, SYS_RESET, TPG_RESET, TPG_END, FIL_INC, FIL_END, TEST_PATTERN, CUT_OP, FF_OP, ORA_RES,ERR_COUNT);
+    // end
+
+    // initial begin
+    //     $dumpfile("vars3.vcd");
+    //     $dumpvars(1, top);
+    //     $dumplimit(100000000);
     // end
 
 endmodule

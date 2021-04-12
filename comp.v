@@ -1,7 +1,7 @@
 /* 
-    Comparator Module
+    Comparator Module (O)
+        Compares the Inputs
         Outputs A xnor B (0 when A = B, 1 otherwise)
-        Compares the Inputs present at the clock edge.
 
     Parameters:
         1.  BITS     : Number of Bits Received per input

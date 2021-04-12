@@ -1,18 +1,15 @@
 /* 
     Counter Module
         Counts Up when inc is 1
-
     Used in:
         1. ORA #3
     
     Parameters:
         1. BITS         : Number of Bits in the Counter
-
     Inputs: 
         1.  clk
         2.  rst         : Asynch Reset
         2.  inc         : Increment when 1
-
     Outputs:
         1. count        : Current State of Counter
 */

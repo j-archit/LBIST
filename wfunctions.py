@@ -1,5 +1,6 @@
 import os
 import re
+import random as ra
 from math import log2, ceil
 
 def generate_port_lines(i, o, inp_arr, out_arr1, out_arr2):
@@ -81,17 +82,6 @@ def mod_top_params(fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, cl
     f = open (fname, "w")
     f.write("".join(lines))
            
-def wrap(cut, mid_file, top_file):
-    
-    cut_file = f"ISCAS85\\{cut}.v"
-    inputs, outputs, faults = get_config(cut_file)
-    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
-    mod_top_params(top_file, inputs, outputs, faults)
-
-    os.system("iverilog -o output -c .compile")
-    os.system(f"echo {cut.upper()} >> output.txt")
-    os.system(f"vvp output >> output.txt")
-
 # Note that this function needs to be run only once 
 # and not on every compilation to edit the faulty cut file
 def cut_f(cut):
@@ -179,8 +169,9 @@ def cut_f(cut):
     FEN <= {{{len(PIs) + num_fan - 1}'b0, 1'b1}};
     fault <= 1'b0;
     END <= 1'b0;
-    //$display("T=%.0f, FEN = %.0f, F = %b", $time, FEN, fault);
-    end"""
+    //$display("FEN = %.0f, F = %b", FEN, fault);
+    end
+    """
     
     always = f"""always @(posedge(clk) or posedge(rst)) begin
     if(rst == 1) begin
@@ -198,8 +189,8 @@ def cut_f(cut):
         end
         FEN <= {{FEN[{len(PIs) + num_fan - 2}:0], FEN[{len(PIs) + num_fan - 1}]}};
     end
-    //$display("T=%.0f, FEN = %.0f, F = %b", $time, FEN, fault);
     end
+    //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
     """
     
     # Build PIs wires and FIMs
@@ -311,3 +302,53 @@ def cut_f(cut):
 
     with open(cut_file + "f.v", "w") as f0:
         f0.writelines(r)
+
+def gen_pol_seed(bit, thresh1 = 0.5):
+    
+    str1 = ""
+    for i in range(0,bit-2):
+        str1 = str1 + str(1 if ra.random() > thresh1 else 0)
+    str1 = str1 + "1 "
+    for i in range(0,bit):
+        str1 = str1 + str(1 if ra.random() > thresh1 else 0)
+    return str1
+
+def prep_source(cut, mid_file, top_file):
+
+    cut_file = f"ISCAS85\\{cut}.v"
+    inputs, outputs, faults = get_config(cut_file)
+    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
+    mod_top_params(top_file, inputs, outputs, faults)
+    return inputs, faults
+
+def wrap_each(cut, mid_file, top_file, iters = 10, thresh = 0.5):
+    inp, fau = prep_source(cut, mid_file, top_file)
+    f = open(f"Results_{cut}", "a")
+    wlines = []
+    for iter in range(0, iters):
+        str1 = gen_pol_seed(inp, thresh)
+        w = ""
+        with open(f"poly\\{int(inp/10)}{inp%10}", "w") as po:
+            po.write(str1)
+        os.system("iverilog -o output -c .compile")
+        os.system("vvp output > output.txt")
+        with open("output.txt", "r") as op:
+            lines = op.readlines()
+        for line in lines:
+            F = re.findall("[0-9]+", line)
+            if F == []:
+                continue
+            if(len(F) == 2):
+                w = f"{F[0]}/{fau}, "
+                continue
+            else:
+                w = w + f"{F[1]}, ({F[2]}ns)"
+                break
+        m = w + " P:" + str1 
+        print(m)
+        wlines.append(m + "\n")
+    f.writelines(wlines)
+            
+
+
+

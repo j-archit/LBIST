@@ -344,11 +344,7 @@ def iter_random_each(cut, mid_file = "mid.v", top_file = "top.v", iters = 10, th
             else:
                 w = w + f"{F[1]}, ({F[2]}ns)"
                 break
-        m = w + " P:" + str1 
+        m = w + " P:" + str1
         print(m)
         wlines.append(m + "\n")
     f.writelines(wlines)
-            
-
-
-

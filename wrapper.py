@@ -25,4 +25,5 @@ top_file = "top.v"
 # for c, iter, thresha, threshb in zip(cut, iters, thresh1, thresh2:
 #     func.iter_random_each(c, mid_file, top_file, iter, thresha, threshb)
 
-func.prep_source(cut[3], mid_file, top_file)
+
+func.prep_source(cut[0], mid_file, top_file)

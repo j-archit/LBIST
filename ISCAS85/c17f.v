@@ -56,7 +56,7 @@ initial begin
         FEN <= {FEN[8:0], FEN[9]};
     end
     end
-    //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
+    always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
 // EndFaultModel
 
 //Anchor

@@ -1240,12 +1240,13 @@ initial begin
             END <= 1;
             fault <= 1;
         end
-        FEN <= {FEN[993:0], FEN[994]};
+        FEN = {FEN[993:0], FEN[994]};
+        if( ((FEN[361] || FEN[364]) && fault == 0) || ((FEN[221] || FEN[224] || FEN[250] || FEN[252] || FEN[689]) && fault)) FEN = {FEN[993:0], FEN[994]};
+        if (FEN[690] && fault) FEN = {FEN[993:0], FEN[994]};
     end
     end
-    always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
-    always @( ((FEN[361] || FEN[364]) && fault == 0) or ((FEN[221] || FEN[224] || FEN[250] || FEN[252] || FEN[689]) && fault == 1) ) FEN <= {FEN[993:0], FEN[994]};
-// EndFaultModel
+    //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
+    // EndFaultModel
 
 //Anchor
 not NOT1_1 (N190, N1_t0);

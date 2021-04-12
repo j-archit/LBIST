@@ -36,11 +36,11 @@ module top;
     // Python Scripts Edits this using "// Params" Comment
     // Do NOT MANUALLY EDIT
     // Params
-	parameter IN_BITS = 60;
-	parameter OUT_BITS = 26;
+	parameter IN_BITS = 5;
+	parameter OUT_BITS = 2;
 	parameter RC_OUT_BITS = 2;
-	parameter TOT_FAULT_BITS = 10;
-	parameter ERR_TOTAL = 902;
+	parameter TOT_FAULT_BITS = 5;
+	parameter ERR_TOTAL = 20;
 	parameter clk_period = 5;
     // Params
 
@@ -79,7 +79,7 @@ module top;
     
     // Finish Simulation if it takes more than 10^7 simulation time
     always begin
-        #10000000
+        #1000
         $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
         $finish;
     end
@@ -95,7 +95,7 @@ module top;
 
     initial begin
         $dumpfile("vars.vcd");
-        $dumpvars(1, top, top.B2.faulty.FEN, top.B2.faulty.fault);
+        $dumpvars(1, top, top.B2.faulty.FEN, top.B2.faulty.fault, top.B1.P);
         $dumplimit(200000000);
     end
 

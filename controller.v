@@ -6,7 +6,7 @@
 `timescale 1ns/1ns
 
 module controller
-#(parameter ERR_BITS = 8, parameter SETUP_DELAY = 13)
+#(parameter ERR_BITS = 8, parameter SETUP_DELAY = 3)
 (
     input clk,
     input TPG_END,

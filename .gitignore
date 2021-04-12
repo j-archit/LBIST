@@ -3,14 +3,11 @@
 __pycache__
 /poly
 
-output
-output.txt
-dpg.v
-fic.v
+output*
 *.bat
 desktop.ini
 mem.mem
 test.v
 test_t.v
-*.vcd
+var*
 Results_c*

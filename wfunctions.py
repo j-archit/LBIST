@@ -303,14 +303,14 @@ def cut_f(cut):
     with open(cut_file + "f.v", "w") as f0:
         f0.writelines(r)
 
-def gen_pol_seed(bit, thresh1 = 0.5):
+def gen_pol_seed(bit, thresh1 = 0.5, thresh2 = 0.5):
     
     str1 = ""
     for i in range(0,bit-2):
         str1 = str1 + str(1 if ra.random() > thresh1 else 0)
     str1 = str1 + "1 "
     for i in range(0,bit):
-        str1 = str1 + str(1 if ra.random() > thresh1 else 0)
+        str1 = str1 + str(1 if ra.random() > thresh2 else 0)
     return str1
 
 def prep_source(cut, mid_file, top_file):
@@ -321,18 +321,18 @@ def prep_source(cut, mid_file, top_file):
     mod_top_params(top_file, inputs, outputs, faults)
     return inputs, faults
 
-def wrap_each(cut, mid_file, top_file, iters = 10, thresh = 0.5):
+def iter_random_each(cut, mid_file = "mid.v", top_file = "top.v", iters = 10, threshp = 0.5, threshs = 0.5):
     inp, fau = prep_source(cut, mid_file, top_file)
     f = open(f"Results_{cut}", "a")
     wlines = []
     for iter in range(0, iters):
-        str1 = gen_pol_seed(inp, thresh)
+        str1 = gen_pol_seed(inp, threshp, threshs)
         w = ""
         with open(f"poly\\{int(inp/10)}{inp%10}", "w") as po:
             po.write(str1)
-        os.system("iverilog -o output -c .compile")
-        os.system("vvp output > output.txt")
-        with open("output.txt", "r") as op:
+        os.system(f"iverilog -o output_{cut} -c .compile")
+        os.system(f"vvp output_{cut} > output_{cut}.txt")
+        with open(f"output_{cut}.txt", "r") as op:
             lines = op.readlines()
         for line in lines:
             F = re.findall("[0-9]+", line)

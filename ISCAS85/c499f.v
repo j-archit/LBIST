@@ -367,12 +367,11 @@ initial begin
             END <= 1;
             fault <= 1;
         end
-        FEN = {FEN[262:0], FEN[263]};
-        if (( FEN[133] || FEN[143] || FEN[145] || FEN[157] || FEN[169] || FEN[181] || FEN[193] || FEN[205] || FEN[217]) && fault == 1) FEN = {FEN[262:0], FEN[263]};;
+        FEN <= {FEN[262:0], FEN[263]};
     end
     end
     //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
-    // EndFaultModel
+// EndFaultModel
 
 //Anchor
 xor XOR2_1 (N250, N1_t0, N5_t0);

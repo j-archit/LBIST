@@ -57,6 +57,7 @@ module rpg
     always @(posedge(clk) or posedge(rst)) begin
         if(rst == 1) begin
             register <= poly_seed[1];
+            END <= 0;
         end
         else if (rst != 1) begin
             // For loop implements a general LFSR
@@ -65,14 +66,16 @@ module rpg
                 // iterations are done simultaneously.
                 reg_inp = reg_inp ^ (poly_seed[0][i] && register[i]);
             end
-            register[BITS-2:0] <= register >> 1;
-            register[BITS-1] <= reg_inp;
-            reg_inp <= 0;
+            register[BITS-2:0] = register >> 1;
+            register[BITS-1] = reg_inp;
+            reg_inp = 0;
         end
-        if (register == poly_seed[1] && rst != 1) begin
-            if (END != 1) END <= 1;
-            else END <= 0;
-        end
+    end
+    always @(posedge(clk)) begin
         if (END == 1) END <= 0;
+        if (register == poly_seed[1] && rst != 1) begin
+            if (END != 1) END = 1;
+            else END = 0;
+        end
     end
 endmodule

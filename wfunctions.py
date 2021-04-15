@@ -3,6 +3,9 @@ import re
 import random as ra
 from math import log2, ceil
 
+#
+# Functions to Prepare Verilog Source Files according to CUT 
+#
 def generate_port_lines(i, o, inp_arr, out_arr1, out_arr2):
     l1 = "FIL_INC, FIL_END, clk, rst, "
     l2 = ""
@@ -81,9 +84,19 @@ def mod_top_params(fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, cl
     f.close()
     f = open (fname, "w")
     f.write("".join(lines))
-           
-# Note that this function needs to be run only once 
-# and not on every compilation to edit the faulty cut file
+
+def prep_source(cut, mid_file, top_file):
+
+    cut_file = f"ISCAS85\\{cut}.v"
+    inputs, outputs, faults = get_config(cut_file)
+    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
+    mod_top_params(top_file, inputs, outputs, faults)
+    return inputs, faults
+#
+# Prep Functions End 
+#
+
+# Creates the Fault Injection Enabled CUT from the Structural Model
 def cut_f(cut):
     cut_file = f"ISCAS85\\{cut}"
     
@@ -290,7 +303,7 @@ def cut_f(cut):
     with open(cut_file + "f.v", "r") as f0: 
         r = f0.readlines()
     
-    # UPdate Module Name of faulty circuit and add extra ports
+    # Update Module Name of faulty circuit and add extra ports
     for i, ri in enumerate(r):
         F = re.findall("module c[0-9]+ [(]", ri)
         if F == []:
@@ -302,7 +315,9 @@ def cut_f(cut):
 
     with open(cut_file + "f.v", "w") as f0:
         f0.writelines(r)
+# END
 
+# For Random Polynomial and Seed Testing Only:
 def gen_pol_seed(bit, thresh1 = 0.5, thresh2 = 0.5):
     
     str1 = ""
@@ -312,14 +327,6 @@ def gen_pol_seed(bit, thresh1 = 0.5, thresh2 = 0.5):
     for i in range(0,bit):
         str1 = str1 + str(1 if ra.random() > thresh2 else 0)
     return str1
-
-def prep_source(cut, mid_file, top_file):
-
-    cut_file = f"ISCAS85\\{cut}.v"
-    inputs, outputs, faults = get_config(cut_file)
-    mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
-    mod_top_params(top_file, inputs, outputs, faults)
-    return inputs, faults
 
 def iter_random_each(cut, mid_file = "mid.v", top_file = "top.v", iters = 10, threshp = 0.5, threshs = 0.5):
     inp, fau = prep_source(cut, mid_file, top_file)
@@ -348,3 +355,4 @@ def iter_random_each(cut, mid_file = "mid.v", top_file = "top.v", iters = 10, th
         print(m)
         wlines.append(m + "\n")
     f.writelines(wlines)
+# END

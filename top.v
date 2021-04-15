@@ -36,11 +36,11 @@ module top;
     // Python Scripts Edits this using "// Params" Comment
     // Do NOT MANUALLY EDIT
     // Params
-	parameter IN_BITS = 5;
-	parameter OUT_BITS = 2;
+	parameter IN_BITS = 233;
+	parameter OUT_BITS = 140;
 	parameter RC_OUT_BITS = 2;
-	parameter TOT_FAULT_BITS = 5;
-	parameter ERR_TOTAL = 20;
+	parameter TOT_FAULT_BITS = 12;
+	parameter ERR_TOTAL = 2844;
 	parameter clk_period = 5;
     // Params
 
@@ -59,13 +59,17 @@ module top;
     reg clk;
     initial clk <= 0;
     always #clk_period clk <= ~clk;
+    
+    reg clk2;
+    initial clk2 <= 0;
+    always @(clk) #(clk_period) clk2 <= clk;
 // clk ends
 
 // Module Instantiations
     controller #(.ERR_BITS(TOT_FAULT_BITS)) B0(.clk(clk), .TPG_END(TPG_END), .ORA_RES(ORA_RES), .FIL_END(FIL_END), .RESET(SYS_RESET), .TPG_RESET(TPG_RESET), .FIL_INC(FIL_INC), .ERR_COUNTER(ERR_COUNT));
     tpg #(.BITS(IN_BITS)) B1(.clk(clk), .rst(TPG_RESET), .END(TPG_END), .TEST_PATTERN(TEST_PATTERN));
     mid #(.IN_BITS(IN_BITS), .OUT_BITS(OUT_BITS)) B2(.clk(clk), .rst(SYS_RESET), .FIL_INC(FIL_INC), .FIL_END(FIL_END), .TEST_IP(TEST_PATTERN), .CUT_OP(CUT_OP), .FF_OP(FF_OP));
-    ora #(.OUT_BITS(OUT_BITS)) B3(.clk(clk), .rst(SYS_RESET), .CUT_OP(CUT_OP), .FF_OP(FF_OP), .RES(ORA_RES));
+    ora #(.OUT_BITS(OUT_BITS)) B3(.clk(clk2), .rst(SYS_RESET), .CUT_OP(CUT_OP), .FF_OP(FF_OP), .RES(ORA_RES));
 // Instantiations End
 
 
@@ -77,17 +81,17 @@ module top;
         $finish;
     end
     
-    // Finish Simulation if it takes more than 10^7 simulation time
+    // Finish Simulation if it takes more than 5*10^7 simulation time
     always begin
-        #1000
+        #50000000
         $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
         $finish;
     end
 
-    // always begin
-    //     #1000000
-    //     $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
-    // end
+    always begin
+        #320000
+        $display("Errors Detected = %.0f, Total Errors = %.0f", ERR_COUNT, ERR_TOTAL);
+    end
 
     // always @(clk) begin
     //     $display("T=%.0f,R=%b,TR=%b,TE=%b,FI=%b,FE=%b,TP=%b,OP_F=%b,OP_FF=%b,OR=%b,ERRORS=%.0f", $time, SYS_RESET, TPG_RESET, TPG_END, FIL_INC, FIL_END, TEST_PATTERN, CUT_OP, FF_OP, ORA_RES,ERR_COUNT);

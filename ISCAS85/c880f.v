@@ -12,6 +12,7 @@
 // NOT1 63
 // NOR2 61
 // BUFF1 26
+// Nfaults 902
 
 module c880f (INC,END,clk,rst,N1,N8,N13,N17,N26,N29,N36,N42,N51,N55,
              N59,N68,N72,N73,N74,N75,N80,N85,N86,N87,

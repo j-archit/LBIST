@@ -16,6 +16,7 @@
 // AND5 16
 // AND8 3
 // NOR2 1
+// Nfaults 1990
 
 module c1908f (INC,END,clk,rst,N1,N4,N7,N10,N13,N16,N19,N22,N25,N28,
               N31,N34,N37,N40,N43,N46,N49,N53,N56,N60,
@@ -1240,13 +1241,11 @@ initial begin
             END <= 1;
             fault <= 1;
         end
-        FEN = {FEN[993:0], FEN[994]};
-        if( ((FEN[361] || FEN[364]) && fault == 0) || ((FEN[221] || FEN[224] || FEN[250] || FEN[252] || FEN[689]) && fault)) FEN = {FEN[993:0], FEN[994]};
-        if (FEN[690] && fault) FEN = {FEN[993:0], FEN[994]};
+        FEN <= {FEN[993:0], FEN[994]};
     end
     end
     //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
-    // EndFaultModel
+// EndFaultModel
 
 //Anchor
 not NOT1_1 (N190, N1_t0);

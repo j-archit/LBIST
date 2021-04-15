@@ -15,6 +15,7 @@
 // AND5 7
 // OR3 2
 // OR5 2
+// Nfaults 2844
 
 module c2670f (INC,END,clk,rst,N1,N2,N3,N4,N5,N6,N7,N8,N11,N14,
               N15,N16,N19,N20,N21,N22,N23,N24,N25,N26,

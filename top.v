@@ -36,13 +36,12 @@ module top;
     // Python Scripts Edits this using "// Params" Comment
     // Do NOT MANUALLY EDIT
     // Params
-	parameter IN_BITS = 233;
-	parameter OUT_BITS = 140;
+	parameter IN_BITS = 33;
+	parameter OUT_BITS = 25;
 	parameter RC_OUT_BITS = 2;
-	parameter TOT_FAULT_BITS = 12;
-	parameter ERR_TOTAL = 2844;
+	parameter TOT_FAULT_BITS = 11;
+	parameter ERR_TOTAL = 1990;
 	parameter clk_period = 5;
-    // Params
 
 // Parameters End
 
@@ -98,7 +97,7 @@ module top;
     // end
 
     initial begin
-        $dumpfile("vars.vcd");
+		$dumpfile("c1908.vcd");
         $dumpvars(1, top, top.B2.faulty.FEN, top.B2.faulty.fault, top.B1.P);
         $dumplimit(200000000);
     end

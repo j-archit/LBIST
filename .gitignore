@@ -9,3 +9,4 @@ test.v
 test_t.v
 var*
 Results_c*
+*.vcd

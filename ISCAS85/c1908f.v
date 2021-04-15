@@ -1241,7 +1241,9 @@ initial begin
             END <= 1;
             fault <= 1;
         end
-        FEN <= {FEN[993:0], FEN[994]};
+        FEN = {FEN[993:0], FEN[994]};
+        if( ((FEN[361] || FEN[364] || FEN[690]) && fault == 0) || ((FEN[68] || FEN[221] || FEN[224] || FEN[250] || FEN[252] || FEN[688]) && fault)) FEN = {FEN[993:0], FEN[994]};
+        if (FEN[690] && fault) FEN = {FEN[993:0], FEN[994]};
     end
     end
     //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);

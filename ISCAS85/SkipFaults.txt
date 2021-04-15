@@ -1,0 +1,7 @@
+c432:
+if (((FEN[41] || FEN[94] || FEN[98] || FEN[137] || FEN[194] || FEN[205]) && fault == 0) || (FEN[220] && fault)) FEN <= {FEN[234:0], FEN[235]};
+c499:
+if (( FEN[133] || FEN[143] || FEN[145] || FEN[157] || FEN[169] || FEN[181] || FEN[193] || FEN[205] || FEN[217]) && fault == 1) FEN = {FEN[262:0], FEN[263]};
+c1908:
+if( ((FEN[361] || FEN[364]) && fault == 0) || ((FEN[221] || FEN[224] || FEN[250] || FEN[252] || FEN[688]) && fault)) FEN = {FEN[993:0], FEN[994]};
+if (FEN[690] && fault) FEN = {FEN[993:0], FEN[994]};

@@ -64,7 +64,7 @@ def mod_mid(mid, cut, inputs, outputs, inp_arr, out_arr1, out_arr2, params = "")
     f = open(mid, "w")
     f.write("".join(lines))
 
-def mod_top_params(fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, clk = 5):
+def mod_top(cut, fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, clk = 5):
     
     fbits = ceil(log2(faults))
     
@@ -80,6 +80,8 @@ def mod_top_params(fname, inputs = 3, outputs = 1, faults = 100, rc_bits = 2, cl
             lines[i+4] = p + f" TOT_FAULT_BITS = {fbits};\n"
             lines[i+5] = p + f" ERR_TOTAL = {faults};\n"
             lines[i+6] = p + f" clk_period = {clk};\n"
+        if (re.findall("[$]dumpfile[(]", line) != []):
+            lines[i] = f"\t\t$dumpfile(\"{cut}.vcd\");\n"
             break
     f.close()
     f = open (fname, "w")
@@ -90,7 +92,7 @@ def prep_source(cut, mid_file, top_file):
     cut_file = f"ISCAS85\\{cut}.v"
     inputs, outputs, faults = get_config(cut_file)
     mod_mid(mid_file, cut, inputs, outputs, "TEST_IP", "CUT_OP", "FF_OP")
-    mod_top_params(top_file, inputs, outputs, faults)
+    mod_top(cut, top_file, inputs, outputs, faults)
     return inputs, faults
 #
 # Prep Functions End 
@@ -200,7 +202,7 @@ def cut_f(cut):
             END <= 1;
             fault <= 1;
         end
-        FEN <= {{FEN[{len(PIs) + num_fan - 2}:0], FEN[{len(PIs) + num_fan - 1}]}};
+        FEN = {{FEN[{len(PIs) + num_fan - 2}:0], FEN[{len(PIs) + num_fan - 1}]}};
     end
     end
     //always @(FEN or fault) $monitor("FEN = %.0f, F = %b", FEN, fault);
